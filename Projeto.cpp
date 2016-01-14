@@ -7,10 +7,11 @@ using namespace std;
 
 #pragma region Node
 
-//Estrutura "Nó" que guarda seu pai e seus filhos
+//Estrutura "Nó" que guarda o endereço de seu pai e seus filhos
 struct Node {
-	int UpWard;
-	vector<int> DownWard;
+	int Number = 0;
+	Node* UpWard;
+	vector<Node*> DownWard;
 };
 
 #pragma endregion
@@ -37,47 +38,79 @@ Tree::Tree(int nrNodes)
 	{
 		//Gera um número aleatório maior que o atual e menor ou igual ao número de nós
 		int upWard = (i + 1) + (rand() % (nrNodes - i));
-
-		Nodes[i].UpWard = upWard;
-		Nodes[upWard].DownWard.push_back(i);
+		Nodes[i].Number = i;
+		Nodes[i].UpWard = &Nodes[upWard];
+		Nodes[upWard].DownWard.push_back(&Nodes[i]);
 	}
+
+	Nodes[nrNodes].Number = nrNodes;
 }
 Tree Tree::GenerateIsomorphic()
 {
 	Tree newTree(Nodes.size());
-	newTree.Nodes = Nodes;
+	for (int i = 1; i <= Nodes.size(); i++)
+	{
+		if(i != Nodes.size())
+			newTree.Nodes[i].UpWard = &newTree.Nodes[Nodes[i].UpWard->Number];
 
-	vector<int> leaves;
+		newTree.Nodes[i].DownWard.clear();
+		for each (Node* node in Nodes[i].DownWard)
+			newTree.Nodes[i].DownWard.push_back(&newTree.Nodes[node->Number]);
+	}
+
+	vector<Node*> leaves;
 
 	for (int i = 1; i <= newTree.Nodes.size(); i++)
 	{
 		if (newTree.Nodes[i].DownWard.size() == 0)
-			leaves.push_back(i);
+			leaves.push_back(&newTree.Nodes[i]);
 
 		if (leaves.size() > 1)
 			i = newTree.Nodes.size() + 1;
 	}
 
-	int aux = 0;
 	//Caso tenha achado mais de uma folha inverte as posições delas
 	if (leaves.size() > 1)
 	{
-		aux = newTree.Nodes[leaves[0]].UpWard;
-		newTree.Nodes[leaves[0]].UpWard = newTree.Nodes[leaves[1]].UpWard;
-		newTree.Nodes[leaves[1]].UpWard = aux;
+		int pos = 0;
+		vector<Node*>::iterator it;
+		
+		//Guarda os pais das folhas
+		Node* upOne = leaves[0]->UpWard;
+		Node* upTwo = leaves[1]->UpWard;
+
+		//Troca os pais
+		leaves[0]->UpWard = upTwo;
+		leaves[1]->UpWard = upOne;
+
+		//Remove folha1 do seu pai antigo
+		it = find(upOne->DownWard.begin(), upOne->DownWard.end(), leaves[0]);
+		pos = distance(upOne->DownWard.begin(), it);
+		upOne->DownWard.erase(upOne->DownWard.begin() + pos);
+
+		//Remove folha2 do seu pai antigo
+		it = find(upTwo->DownWard.begin(), upTwo->DownWard.end(), leaves[1]);
+		pos = distance(upTwo->DownWard.begin(), it);
+		upTwo->DownWard.erase(upTwo->DownWard.begin() + pos);
+
+		//Realoca as folhas certas
+		upOne->DownWard.push_back(leaves[1]);
+		upTwo->DownWard.push_back(leaves[0]);
+
 	}
 	//Senão troca de lugar com o pai
 	else
 	{
-		aux = newTree.Nodes[leaves[0]].UpWard;
+		//Recebe o pai da folha
+		Node* aux = leaves[0]->UpWard;
 		
 		//Aponta o filho para o avô e adiciona o pai na lista de filhos
-		newTree.Nodes[leaves[0]].UpWard = newTree.Nodes[aux].UpWard;
-		newTree.Nodes[leaves[0]].DownWard.push_back(aux);
+		leaves[0]->UpWard = aux->UpWard;
+		leaves[0]->DownWard.push_back(aux);
 		
 		//Aponta o ex-pai pro filho e limpa a lista de filhos dele
-		newTree.Nodes[aux].UpWard = leaves[0];
-		newTree.Nodes[aux].DownWard.clear();
+		aux->UpWard = leaves[0];
+		aux->DownWard.clear();
 	}
 
 	return newTree;
@@ -88,14 +121,30 @@ Tree Tree::GenerateNonIsomorphic()
 		throw new exception("Impossible to create a non isomorphic tree.");
 
 	Tree newTree(Nodes.size());
-	newTree.Nodes = Nodes;
+	for (int i = 1; i <= Nodes.size(); i++)
+	{
+		if (i != Nodes.size())
+			newTree.Nodes[i].UpWard = &newTree.Nodes[Nodes[i].UpWard->Number];
 
-	int newUpWard = newTree.Nodes[1].UpWard;
+		newTree.Nodes[i].DownWard.clear();
+		for each (Node* node in Nodes[i].DownWard)
+			newTree.Nodes[i].DownWard.push_back(&newTree.Nodes[node->Number]);
+	}
+
+	//O primeiro nó sempre é folha
+	Node* newUpWard = newTree.Nodes[1].UpWard;
+	int newNode = 0;
 	
 	srand(time(NULL));
-	while (newUpWard == newTree.Nodes[1].UpWard)
-		newUpWard = 2 + (rand() % (newTree.Nodes.size() - 1));
-	 
+	while (newUpWard->Number == newTree.Nodes[1].UpWard->Number)
+	{
+		newNode = 2 + (rand() % (newTree.Nodes.size() - 1));
+		newUpWard = &newTree.Nodes[newNode];
+	}
+
+	//Posso remover o primeiro filho porque o nó 1 é o primeiro a ser criado e consequentemente será sempre o primeiro da lista
+	newTree.Nodes[1].UpWard->DownWard.erase(newTree.Nodes[1].UpWard->DownWard.begin());
+	newUpWard->DownWard.push_back(&newTree.Nodes[1]);
 	newTree.Nodes[1].UpWard = newUpWard;
 
 	return newTree;
@@ -213,11 +262,16 @@ void GenerateTrees(int nrNodes, bool isomophic)
 
 */
 
-void AssignLeves(map<int, int> list) 
+void AssignLevels(map<Node*, int> leavesOne, map<Node*, int> leavesTwo) 
 {
-	for (map<int, int>::iterator it = list.begin(); it != list.end(); ++it)
+	map<Node*, vector<int>> subOne, subTwo;
+
+	for (map<Node*, int>::iterator it = leavesOne.begin(); it != leavesOne.end(); ++it)
 	{
-		//it->second.Method();
+		Node aux = *it->first;
+		//subOne[aux.]
+
+		//aux.UpWard = 200;
 	}
 }
 
@@ -228,17 +282,19 @@ bool IsIsomorphic(Tree treeOne, Tree treeTwo)
 		return false;
 	
 	//Estrutura lista Nó/Level
-	map<int, int> listOne;
-	map<int, int> listTwo;
+	map<Node*, int> leavesOne, leavesTwo;
 
+	//Level 0 para todas as folhas
 	for (int i = 1; i <= treeOne.Nodes.size(); i++)
 	{
 		//Definindo level 0 para todas as folhas
 		if (treeOne.Nodes[i].DownWard.size() == 0)
-			listOne[i] = 0;
+			leavesOne[&treeOne.Nodes[i]] = 0;
 		if(treeTwo.Nodes[i].DownWard.size() == 0)
-			listTwo[i] = 0;
+			leavesTwo[&treeTwo.Nodes[i]] = 0;
 	}
+
+	AssignLevels(leavesOne, leavesTwo);
 
 	//for all leves
 	//if (helper1[T1.root] == helper2[T2.root])
@@ -251,8 +307,10 @@ int main()
 {
 	try
 	{
-		Tree x(3);
+		Tree x(5);
 		Tree y = x.GenerateNonIsomorphic();
+
+		IsIsomorphic(x, y);
 
 		return 0;
 	}
