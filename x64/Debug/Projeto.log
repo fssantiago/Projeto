@@ -1,15 +1,18 @@
-﻿Build started 14/01/2016 20:29:02.
+﻿Build started 17/01/2016 17:22:03.
      1>Project "C:\Users\Santiago\Documents\GitHub\Projeto\Projeto.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\x86_amd64\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"x64\Debug\\" /Fd"x64\Debug\vc140.pdb" /Gd /TP /errorReport:prompt Projeto.cpp
          Projeto.cpp
-     1>c:\users\santiago\documents\github\projeto\projeto.cpp(36): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-     1>c:\users\santiago\documents\github\projeto\projeto.cpp(50): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
-     1>c:\users\santiago\documents\github\projeto\projeto.cpp(69): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
-     1>c:\users\santiago\documents\github\projeto\projeto.cpp(88): warning C4244: '=': conversion from '__int64' to 'int', possible loss of data
-     1>c:\users\santiago\documents\github\projeto\projeto.cpp(93): warning C4244: '=': conversion from '__int64' to 'int', possible loss of data
-     1>c:\users\santiago\documents\github\projeto\projeto.cpp(123): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+     1>c:\users\santiago\documents\github\projeto\projeto.cpp(37): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+     1>c:\users\santiago\documents\github\projeto\projeto.cpp(51): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+     1>c:\users\santiago\documents\github\projeto\projeto.cpp(70): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
+     1>c:\users\santiago\documents\github\projeto\projeto.cpp(89): warning C4244: '=': conversion from '__int64' to 'int', possible loss of data
+     1>c:\users\santiago\documents\github\projeto\projeto.cpp(94): warning C4244: '=': conversion from '__int64' to 'int', possible loss of data
+     1>c:\users\santiago\documents\github\projeto\projeto.cpp(124): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
      1>c:\users\santiago\documents\github\projeto\projeto.cpp(139): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+     1>c:\users\santiago\documents\github\projeto\projeto.cpp(213): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+     1>c:\users\santiago\documents\github\projeto\projeto.cpp(214): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+     1>c:\users\santiago\documents\github\projeto\projeto.cpp(258): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\x86_amd64\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Santiago\Documents\GitHub\Projeto\x64\Debug\Projeto.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /Debug /PDB:"C:\Users\Santiago\Documents\GitHub\Projeto\x64\Debug\Projeto.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Santiago\Documents\GitHub\Projeto\x64\Debug\Projeto.lib" /MACHINE:X64 x64\Debug\Projeto.obj
          Projeto.vcxproj -> C:\Users\Santiago\Documents\GitHub\Projeto\x64\Debug\Projeto.exe
@@ -17,4 +20,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:01.61
+Time Elapsed 00:00:03.17
