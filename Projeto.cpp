@@ -24,6 +24,7 @@ public:
 	map<int, Node> Nodes;
 public:
 	Tree(int nrNodes);
+	~Tree();
 	Tree GenerateIsomorphic();
 	Tree GenerateNonIsomorphic();
 };
@@ -45,6 +46,9 @@ Tree::Tree(int nrNodes)
 	}
 
 	Nodes[nrNodes].Number = nrNodes;
+}
+Tree::~Tree() 
+{
 }
 Tree Tree::GenerateIsomorphic()
 {
@@ -166,6 +170,7 @@ void AssignLevels(Node* root, map<Node*, int>* levels)
 		levels->operator[](root->UpWard) = levels->operator[](root) + 1;
 }
 
+/*
 //Preenche estrutura com o level de cada node, necessário executar para cada folha
 void AssignLevelsBottomUp(Node* leaf, map<Node*, int>* levels, int value) 
 {
@@ -175,30 +180,31 @@ void AssignLevelsBottomUp(Node* leaf, map<Node*, int>* levels, int value)
 	if (leaf->UpWard != NULL)
 		AssignLevelsBottomUp(leaf->UpWard, levels ,++value);
 }
+*/
 
-//IGNORAR ESTA FUNÇÃO, AINDA FAZENDO ALGUNS TESTES
-void AssignValues(vector<Node*> l1, vector<Node*> l2, map<Node*, int>* valuesOne, map<Node*, int>* valuesTwo) 
+//Define para os valores para determinado nivel e compara pra ver se as duas arvores estão equivalentes
+bool AssignValuesForLevel(map<int, vector<Node*>>* l1, map<int, vector<Node*>>* l2, map<Node*, vector<int>>* valuesOne, map<Node*, vector<int>>* valuesTwo, int level)
 {
-	vector<pair<int, vector<int>>> s1, s2;
-
-	for each (Node* node in l1)
+	for each (Node* node in l1->operator[](level-1))
+		valuesOne->operator[](node->UpWard).push_back(level-1);
 		
-	for each (Node* node in l2)
-		s2[node->Number].push_back(valuesTwo->operator[](node));
+	for each (Node* node in l2->operator[](level-1))
+		valuesTwo->operator[](node->UpWard).push_back(level-1);
 
-	sort(s1.begin(), s1.end());
-	sort(s2.begin(), s2.end());
-	
+	vector<vector<int>> aux1, aux2;
 
-	/*
-	map<Node*, vector<int>> subOne, subTwo;
+	for each (Node* node in l1->operator[](level))
+		aux1.push_back(valuesOne->operator[](node));
+	for each (Node* node in l2->operator[](level))
+		aux2.push_back(valuesTwo->operator[](node));
 
-	for (map<Node*, int>::iterator it = leavesOne.begin(); it != leavesOne.end(); ++it)
-		subOne[it->first->UpWard].push_back(it->second);
+	sort(aux1.begin(), aux1.end());
+	sort(aux2.begin(), aux2.end());
 
-	for (map<Node*, int>::iterator it = leavesTwo.begin(); it != leavesTwo.end(); ++it)
-		subTwo[it->first->UpWard].push_back(it->second);
-	*/
+	if (aux1 != aux2)
+		return false;
+	else
+		return true;
 }
 
 //Verifica se as arvores são isomorfas
@@ -207,7 +213,7 @@ bool IsIsomorphic(Tree treeOne, Tree treeTwo)
 	//Se o número de nós for diferente retorna falso logo
 	if (treeOne.Nodes.size() != treeTwo.Nodes.size())
 		return false;
-	
+
 	//Define o nivel de cada nó da arvore
 	map<Node*, int> treeLevelsOne, treeLevelsTwo;
 	AssignLevels(&treeOne.Nodes[treeOne.Nodes.size()], &treeLevelsOne);
@@ -215,61 +221,54 @@ bool IsIsomorphic(Tree treeOne, Tree treeTwo)
 
 	/*
 	for (map<Node*, int>::iterator it = leavesOne.begin(); it != leavesOne.end(); ++it)
-		AssignLevelsBottomUp(it->first, &levelsOne, 0);
+	AssignLevelsBottomUp(it->first, &levelsOne, 0);
 	for (map<Node*, int>::iterator it = leavesTwo.begin(); it != leavesTwo.end(); ++it)
-		AssignLevelsBottomUp(it->first, &levelsTwo, 0);
+	AssignLevelsBottomUp(it->first, &levelsTwo, 0);
 	*/
 
-	//Arruma os nós por niveis.
-	map<int, vector<Node*>> levelListOne, levelListTwo;
+	map<Node*, vector<int>> valuesOne, valuesTwo; //Estrutura lista Nó-Inteiros (0 para todas as folhas)
+	map<int, vector<Node*>> levelListOne, levelListTwo; //Recebe os nós arrumados por niveis.
 	for (map<Node*, int>::iterator it = treeLevelsOne.begin(); it != treeLevelsOne.end(); ++it)
-		levelListOne[it->second].push_back(it->first);
+	{
+		levelListOne[it->second].push_back(&*it->first);
+		if (it->second == 0)
+			valuesOne[&*it->first].push_back(0);
+		else
+			valuesOne[&*it->first].clear();
+	}
 	for (map<Node*, int>::iterator it = treeLevelsTwo.begin(); it != treeLevelsTwo.end(); ++it)
-		levelListTwo[it->second].push_back(it->first);
+	{
+		levelListTwo[it->second].push_back(&*it->first);
+		if (it->second == 0)
+			valuesTwo[&*it->first].push_back(0);
+		else
+			valuesTwo[&*it->first].clear();
+	}
 
 	//Se for diferente podemos retornar daqui mesmo
 	if (levelListOne.size() != levelListTwo.size())
 		return false;
-	
-	//Estrutura lista Nó/Inteiro (0 para todas as folhas)
-	map<Node*, int> valuesOne, valuesTwo;
-	for (int i = 1; i <= treeOne.Nodes.size(); i++)
-	{
-		if (treeOne.Nodes[i].DownWard.size() == 0)
-			valuesOne[&treeOne.Nodes[i]] = 0;
-		if(treeTwo.Nodes[i].DownWard.size() == 0)
-			valuesTwo[&treeTwo.Nodes[i]] = 0;
-	}
 
-	/*
-	//Nesse momento só tem folhas em valuesOne e valuesTwo
-	vector<Node*> l1, l2;
-	for (map<Node*, int>::iterator it = valuesOne.begin(); it != valuesOne.end(); ++it)
-		if (treeLevelsOne[it->first] == 0)
-			l1.push_back(it->first);
-	for (map<Node*, int>::iterator it = valuesTwo.begin(); it != valuesTwo.end(); ++it)
-		if (treeLevelsTwo[it->first] == 0)
-			l2.push_back(it->first);
-	*/
-
-	for (int i = 1; i <= levelListOne.size(); i++)
-		AssignValues(levelListOne[i], levelListTwo[i], &valuesOne, &valuesTwo);
+	for (int i = 1; i < levelListOne.size(); i++)
+		if (!AssignValuesForLevel(&levelListOne, &levelListTwo, &valuesOne, &valuesTwo, i))
+			return false;
 
 	if (valuesOne[&treeOne.Nodes[treeOne.Nodes.size()]] == valuesTwo[&treeTwo.Nodes[treeTwo.Nodes.size()]])
 		return true;
 	else
 		return false;
-	
 }
 
 int main()
 {
 	try
 	{
-		Tree x(8);
-		Tree y = x.GenerateIsomorphic();
+	
+			Tree x = Tree(50);
+			Tree y = x.GenerateIsomorphic();
 
-		IsIsomorphic(x, y);
+			if (IsIsomorphic(x, y))
+				throw exception("eita");
 
 		return 0;
 	}
