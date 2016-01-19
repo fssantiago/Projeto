@@ -24,7 +24,6 @@ public:
 	map<int, Node> Nodes;
 public:
 	Tree(int nrNodes);
-	~Tree();
 	Tree GenerateIsomorphic();
 	Tree GenerateNonIsomorphic();
 };
@@ -46,9 +45,6 @@ Tree::Tree(int nrNodes)
 	}
 
 	Nodes[nrNodes].Number = nrNodes;
-}
-Tree::~Tree() 
-{
 }
 Tree Tree::GenerateIsomorphic()
 {
@@ -136,21 +132,32 @@ Tree Tree::GenerateNonIsomorphic()
 			newTree.Nodes[i].DownWard.push_back(&newTree.Nodes[node->Number]);
 	}
 
-	//O primeiro nó sempre é folha
-	Node* newUpWard = newTree.Nodes[1].UpWard;
-	int newNode = 0;
-	
-	srand(time(NULL));
-	while (newUpWard->Number == newTree.Nodes[1].UpWard->Number)
-	{
-		newNode = 2 + (rand() % (newTree.Nodes.size() - 1));
-		newUpWard = &newTree.Nodes[newNode];
-	}
 
-	//Posso remover o primeiro filho porque o nó 1 é o primeiro a ser criado e consequentemente será sempre o primeiro da lista
-	newTree.Nodes[1].UpWard->DownWard.erase(newTree.Nodes[1].UpWard->DownWard.begin());
-	newUpWard->DownWard.push_back(&newTree.Nodes[1]);
-	newTree.Nodes[1].UpWard = newUpWard;
+	if (newTree.Nodes[1].UpWard != &newTree.Nodes[newTree.Nodes.size()])
+	{
+		//Posso remover o primeiro filho porque o nó 1 é o primeiro a ser criado e consequentemente será sempre o primeiro da lista
+		newTree.Nodes[1].UpWard->DownWard.erase(newTree.Nodes[1].UpWard->DownWard.begin());
+		newTree.Nodes[newTree.Nodes.size()].DownWard.push_back(&newTree.Nodes[1]);
+		newTree.Nodes[1].UpWard = &newTree.Nodes[newTree.Nodes.size()];
+	}
+	else
+	{
+		//O primeiro nó sempre é folha
+		Node* newUpWard = newTree.Nodes[1].UpWard;
+		int newNode = 0;
+
+		srand(time(NULL));
+		while (newUpWard->Number == newTree.Nodes[1].UpWard->Number)
+		{
+			newNode = 2 + (rand() % (newTree.Nodes.size() - 1));
+			newUpWard = &newTree.Nodes[newNode];
+		}
+
+		//Posso remover o primeiro filho porque o nó 1 é o primeiro a ser criado e consequentemente será sempre o primeiro da lista
+		newTree.Nodes[1].UpWard->DownWard.erase(newTree.Nodes[1].UpWard->DownWard.begin());
+		newUpWard->DownWard.push_back(&newTree.Nodes[1]);
+		newTree.Nodes[1].UpWard = newUpWard;
+	}
 
 	return newTree;
 }
@@ -185,6 +192,7 @@ void AssignLevelsBottomUp(Node* leaf, map<Node*, int>* levels, int value)
 //Define para os valores para determinado nivel e compara pra ver se as duas arvores estão equivalentes
 bool AssignValuesForLevel(map<int, vector<Node*>>* l1, map<int, vector<Node*>>* l2, map<Node*, vector<int>>* valuesOne, map<Node*, vector<int>>* valuesTwo, int level)
 {
+	//Para cada nó abaixo abaixo desse nivel adiciona o level ao pai
 	for each (Node* node in l1->operator[](level-1))
 		valuesOne->operator[](node->UpWard).push_back(level-1);
 		
@@ -205,6 +213,23 @@ bool AssignValuesForLevel(map<int, vector<Node*>>* l1, map<int, vector<Node*>>* 
 		return false;
 	else
 		return true;
+
+		/*
+
+		//Remove tuplas duplicadas
+		aux1.erase(unique(aux1.begin(), aux1.end()), aux1.end());
+		aux2.erase(unique(aux2.begin(), aux2.end()), aux2.end());
+
+		for (int k = 1; k <= aux1.size(); k++)
+			for each (Node* node in l1->operator[](k))
+				valuesOne->operator[](node).push_back(k);
+		for (int k = 1; k <= aux2.size(); k++)
+			for each (Node* node in l2->operator[](k))
+				valuesTwo->operator[](node).push_back(k);
+
+		return true;
+
+		*/	
 }
 
 //Verifica se as arvores são isomorfas
@@ -263,12 +288,17 @@ int main()
 {
 	try
 	{
-	
-			Tree x = Tree(50);
+		int start = 1, end = 5000;
+		while (start <= end)
+		{
+			Tree x = Tree(100);
 			Tree y = x.GenerateIsomorphic();
 
-			if (IsIsomorphic(x, y))
-				throw exception("eita");
+			if (!IsIsomorphic(x, y))
+				cout << "Teste " << start << " falhou!";
+
+			start++;
+		}
 
 		return 0;
 	}
