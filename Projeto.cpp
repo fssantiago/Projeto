@@ -32,7 +32,7 @@ public:
 Tree::Tree(int nrNodes)
 {
 	if (nrNodes < 2)
-		throw new exception("Number of nodes minimum is 2.");
+		throw "Number of nodes minimum is 2.";
 
 	//Cria arvore
 	srand(time(NULL));
@@ -56,8 +56,10 @@ Tree Tree::GenerateIsomorphic()
 			newTree.Nodes[i].UpWard = &newTree.Nodes[Nodes[i].UpWard->Number];
 
 		newTree.Nodes[i].DownWard.clear();
-		for each (Node* node in Nodes[i].DownWard)
-			newTree.Nodes[i].DownWard.push_back(&newTree.Nodes[node->Number]);
+		for (int j = 0; j < Nodes[i].DownWard.size(); j++)
+			newTree.Nodes[i].DownWard.push_back(&newTree.Nodes[Nodes[i].DownWard[j]->Number]);
+		//for each (Node* node in Nodes[i].DownWard)
+			//newTree.Nodes[i].DownWard.push_back(&newTree.Nodes[node->Number]);
 	}
 
 	vector<Node*> leaves;
@@ -120,7 +122,7 @@ Tree Tree::GenerateIsomorphic()
 Tree Tree::GenerateNonIsomorphic()
 {
 	if (Nodes.size() < 3)
-		throw new exception("Impossible to create a non isomorphic tree.");
+		throw "Impossible to create a non isomorphic tree.";
 
 	Tree newTree(Nodes.size());
 	for (int i = 1; i <= Nodes.size(); i++)
@@ -129,10 +131,11 @@ Tree Tree::GenerateNonIsomorphic()
 			newTree.Nodes[i].UpWard = &newTree.Nodes[Nodes[i].UpWard->Number];
 
 		newTree.Nodes[i].DownWard.clear();
-		for each (Node* node in Nodes[i].DownWard)
-			newTree.Nodes[i].DownWard.push_back(&newTree.Nodes[node->Number]);
+		for (int j = 0; j < Nodes[i].DownWard.size(); j++)
+			newTree.Nodes[i].DownWard.push_back(&newTree.Nodes[Nodes[i].DownWard[j]->Number]);
+		//for each (Node* node in Nodes[i].DownWard)
+			//newTree.Nodes[i].DownWard.push_back(&newTree.Nodes[node->Number]);
 	}
-
 
 	if (newTree.Nodes[1].UpWard != &newTree.Nodes[newTree.Nodes.size()])
 	{
@@ -173,43 +176,36 @@ void AssignLevels(Node* root, map<Node*, int>* levels)
 	else
 		levels->operator[](root) = levels->operator[](root->UpWard) + 1;
 	
-	for each (Node* node in root->DownWard)
-		AssignLevels(node, levels);
-
-	/*
-	if (root->DownWard.size() > 0)
-		for each (Node* node in root->DownWard)
-			AssignLevels(node, levels);
-	else
-		levels->operator[](root) = 0;
-
-	if (root->UpWard != NULL && levels->operator[](root->UpWard) < levels->operator[](root) + 1)
-		levels->operator[](root->UpWard) = levels->operator[](root) + 1;
-	*/
+	for (int i = 0; i < root->DownWard.size(); i++)
+		AssignLevels(root->DownWard[i], levels);
+	//for each (Node* node in root->DownWard)
+		//AssignLevels(node, levels);
 }
 
 //Define para os valores para determinado nivel e compara pra ver se as duas arvores estão equivalentes
 bool AssignValuesForLevel(vector<Node*>* l1, vector<Node*>* l2, map<Node*, int>* valuesOne, map<Node*, int>* valuesTwo)
 {
 	//SubTree gerada
-	//map<Node*, vector<int>> s1, s2;
-	map<Node*, multiset<int>> s1, s2;
+	map<Node*, multiset<int>> s1, s2;//map<Node*, vector<int>> s1, s2;
 
+	for (int i = 0; i < l1->size(); i++)//
+		s1[l1->operator[](i)->UpWard].insert(valuesOne->operator[](l1->operator[](i)));
+	for (int i = 0; i < l2->size(); i++)
+		s2[l2->operator[](i)->UpWard].insert(valuesTwo->operator[](l2->operator[](i)));
+	/*
 	for each (Node* node in *l1)
 		//s1[node->UpWard].push_back(valuesOne->operator[](node));
 		s1[node->UpWard].insert(valuesOne->operator[](node));
 	for each (Node* node in *l2)
 		//s2[node->UpWard].push_back(valuesTwo->operator[](node));
 		s2[node->UpWard].insert(valuesTwo->operator[](node));
+	*/
 
-	vector<multiset<int>> aux1, aux2;
-	//vector<vector<int>> aux1, aux2;
-
-	for (map<Node*, multiset<int>>::iterator it = s1.begin(); it != s1.end(); ++it)
-	//for (map<Node*, vector<int>>::iterator it = s1.begin(); it != s1.end(); ++it)
+	vector<multiset<int>> aux1, aux2; //vector<vector<int>> aux1, aux2;
+	
+	for (map<Node*, multiset<int>>::iterator it = s1.begin(); it != s1.end(); ++it)//for (map<Node*, vector<int>>::iterator it = s1.begin(); it != s1.end(); ++it)
 		aux1.push_back(it->second);
-	for (map<Node*, multiset<int>>::iterator it = s2.begin(); it != s2.end(); ++it)
-	//for (map<Node*, vector<int>>::iterator it = s2.begin(); it != s2.end(); ++it)
+	for (map<Node*, multiset<int>>::iterator it = s2.begin(); it != s2.end(); ++it)//for (map<Node*, vector<int>>::iterator it = s2.begin(); it != s2.end(); ++it)
 		aux2.push_back(it->second);
 
 	sort(aux1.begin(), aux1.end());
@@ -225,14 +221,12 @@ bool AssignValuesForLevel(vector<Node*>* l1, vector<Node*>* l2, map<Node*, int>*
 
 		//vector<vector<int>>::iterator aux;
 		vector<multiset<int>>::iterator aux;
-		for (map<Node*, multiset<int>>::iterator it = s1.begin(); it != s1.end(); ++it)
-		//for (map<Node*, vector<int>>::iterator it = s1.begin(); it != s1.end(); ++it)
+		for (map<Node*, multiset<int>>::iterator it = s1.begin(); it != s1.end(); ++it)//for (map<Node*, vector<int>>::iterator it = s1.begin(); it != s1.end(); ++it)
 		{
 			aux = find(aux1.begin(), aux1.end(), it->second);
 			valuesOne->operator[](it->first) = distance(aux1.begin(), aux) + 1;
 		}
-		for (map<Node*, multiset<int>>::iterator it = s2.begin(); it != s2.end(); ++it)
-		//for (map<Node*, vector<int>>::iterator it = s2.begin(); it != s2.end(); ++it)
+		for (map<Node*, multiset<int>>::iterator it = s2.begin(); it != s2.end(); ++it)//for (map<Node*, vector<int>>::iterator it = s2.begin(); it != s2.end(); ++it)
 		{
 			aux = find(aux2.begin(), aux2.end(), it->second);
 			valuesTwo->operator[](it->first) = distance(aux2.begin(), aux) + 1;
@@ -279,7 +273,6 @@ bool IsIsomorphic(Tree* treeOne, Tree* treeTwo)
 		if (!AssignValuesForLevel(&levelListOne[i], &levelListTwo[i], &valuesOne, &valuesTwo))
 			return false;
 	}
-		
 
 	if (valuesOne[&treeOne->Nodes[treeOne->Nodes.size()]] == valuesTwo[&treeTwo->Nodes[treeTwo->Nodes.size()]])
 		return true;
