@@ -168,6 +168,24 @@ Tree Tree::GenerateNonIsomorphic()
 
 #pragma endregion
 
+void BubbleSort(vector<multiset<int>>* vet)
+{
+	multiset<int> aux, one, two;
+
+	for (int i = (vet->size() - 1); i >= 1; i--)
+	{
+		for (int j = 0; j < i; j++)
+		{
+			if (vet->operator[](j) > vet->operator[](j + 1))
+			{
+				aux = vet->operator[](j);
+				vet->operator[](j) = vet->operator[](j + 1);
+				vet->operator[](j + 1) = aux;
+			}
+		}
+	}
+}
+
 //Define o level de cada nó a partir da raiz da arvore
 void AssignLevels(Node* root, map<Node*, int>* levels)
 {
@@ -208,8 +226,10 @@ bool AssignValuesForLevel(vector<Node*>* l1, vector<Node*>* l2, map<Node*, int>*
 	for (map<Node*, multiset<int>>::iterator it = s2.begin(); it != s2.end(); ++it)//for (map<Node*, vector<int>>::iterator it = s2.begin(); it != s2.end(); ++it)
 		aux2.push_back(it->second);
 
-	sort(aux1.begin(), aux1.end());
-	sort(aux2.begin(), aux2.end());
+	//sort(aux1.begin(), aux1.end());
+	//sort(aux2.begin(), aux2.end());
+	BubbleSort(&aux1);
+	BubbleSort(&aux2);
 
 	if (aux1 != aux2)
 		return false;
@@ -292,7 +312,7 @@ int main()
 		Tree x = Tree(nrNodes);
 		Tree y = isomorphic ? x.GenerateIsomorphic() : x.GenerateNonIsomorphic();
 
-		if (IsIsomorphic(&x, &y))
+		if (IsIsomorphic(&x, &y) != isomorphic)
 			return 1;
 		else
 			return 0;

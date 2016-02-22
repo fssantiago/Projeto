@@ -1,0 +1,11 @@
+﻿Build started 28/01/2016 11:52:14.
+     1>Project "C:\Users\Santiago\Documents\GitHub\Projeto\Projeto.vcxproj" on node 2 (Build target(s)).
+     1>ClCompile:
+         C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\x86_amd64\CL.exe /c /IC:\Users\Santiago\Documents\GitHub\Projeto\packages\Python27.2.7.6\build\..\include\ /Zi /nologo /W3 /WX- /sdl /O2 /Oi /GL /D NDEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Yu"stdafx.h" /Fp"x64\Release\Projeto.pch" /Fo"x64\Release\\" /Fd"x64\Release\vc140.pdb" /Gd /TP /errorReport:prompt Projeto.cpp
+         Projeto.cpp
+     1>Projeto.cpp(351): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "stdafx.h"' to your source?
+     1>Done Building Project "C:\Users\Santiago\Documents\GitHub\Projeto\Projeto.vcxproj" (Build target(s)) -- FAILED.
+
+Build FAILED.
+
+Time Elapsed 00:00:00.43
