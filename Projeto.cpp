@@ -4,6 +4,8 @@
 #include <ctime>
 #include <iostream>
 #include <algorithm>
+#include "Sorter.h"
+#include <list>
 
 using namespace std;
 
@@ -302,6 +304,22 @@ bool IsIsomorphic(Tree* treeOne, Tree* treeTwo)
 
 int main()
 {
+	#pragma region Testes
+
+	int a[10] = { 10, 9, 8, 7, 6, 5, 2, 12, 1, 11 };
+	vector<int> b = { 10, 9, 8, 7, 6, 5, 2, 0, 1, 11 };
+	vector<char> c = {'z','k','l','j','w','f','a','d'};
+	vector<string> d = {"def", "bcd", "abc", "cde", "abc" };
+	
+	BucketSort(&a);
+	BucketSort(&b);
+	BucketSort(&c);
+	//RadixSort(&d);
+
+	#pragma endregion
+
+
+
 	try
 	{
 		int nrNodes;
