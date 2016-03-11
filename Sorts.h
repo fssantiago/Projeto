@@ -1,11 +1,5 @@
-#ifndef SORTER_H 
-#define SORTER_H
-#include <vector>
-#include <array>
-#include <string>
-#include <algorithm>
-#include <numeric>
-#include <iostream>
+#ifndef SORTS_H 
+#define SORTS_H
 
 //Pior Caso: O(n²)
 //Melhor Caso: O(n)
@@ -157,23 +151,58 @@ template <class object, class type> void Partition(object *content, int begin, i
 	}
 }
 
-//
-template <class object> void TreeSort(object *content)
+//Melhor Caso: O(n log n)
+//Pior Caso: O(n log n)
+template <class type> struct TNode
+{
+	type data;
+	TNode* left;
+	TNode* right;
+};
+template <class type> void Insert(TNode<type> **node, type data)
+{
+	if (*node == NULL)
+	{
+		*node = new TNode<type>();
+
+		(*node)->data = data;
+		(*node)->left = NULL;
+		(*node)->right = NULL;
+	}
+	else
+	{
+		if (data < (*node)->data)
+			Insert(&(*node)->left, data);
+		else
+			Insert(&(*node)->right, data);
+	}
+}
+template <class object, class type> void InOrder(TNode<type> *node, object *content, int *ref)
+{
+	if (node != NULL)
+	{
+		InOrder(node->left, content, ref);
+		(*(content))[*ref] = node->data;
+		(*ref)++;
+		InOrder(node->right, content, ref);
+	}
+}
+template <class object, class type> void TreeSort(object *content, type value)
 {
 	int nrItens = size((*(content)));
+	TNode<type>* root = NULL;
+	
+	for (int i = 0; i < nrItens; i++)
+		Insert(&root, (*(content))[i]);
 
-	//Assume: |B| ? N
-	//Garante: B[i] ? B[i+1] ? 1 ? i < N 
-	var T: ArvoreBalanceada<Inteiro, Inteiro>     
-		i, ProxPos: Inteiro 
-		
-	Constroi(T) 
-	para i ? 1 até N faça
-		Insere(T, B[i], B[i])
+	int pos = 0;
+	InOrder(root, content, &pos);
 
-	ProxPos ? 1
-	Escreve(T.Raiz, B, ProxPos)
-	Destroi(T)
+	free(root);
+}
+template <class object> void TreeSort(object *content)
+{
+	TreeSort(content, (*(content))[0]);
 }
 
 //Melhor Caso: O(n log n)
@@ -261,7 +290,8 @@ template <class object, class type> void CountingSort(object *content, type valu
 		(*(content))[i] = output[i];
 }
 
-//
+//Melhor Caso: O(nk)
+//Pior Caso: O(nk)
 template <class object> void RadixSort(object *content)
 {
 	if(typeid((*(content))[0]) != typeid(string))

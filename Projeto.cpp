@@ -4,7 +4,7 @@
 #include <ctime>
 #include <iostream>
 #include <algorithm>
-#include "Sorter.h"
+#include "Sorts.h"
 #include <list>
 
 using namespace std;
@@ -311,10 +311,10 @@ int main()
 	vector<char> c = {'z','k','l','j','w','f','a','d'};
 	vector<string> d = {"def", "bcd", "abc", "cde", "abc" };
 	
-	BucketSort(&a);
-	BucketSort(&b);
-	BucketSort(&c);
-	//RadixSort(&d);
+	TreeSort(&a);
+	TreeSort(&b);
+	TreeSort(&c);
+	TreeSort(&d);
 
 	#pragma endregion
 

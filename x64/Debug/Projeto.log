@@ -1,4 +1,4 @@
-﻿Build started 10/03/2016 10:58:40.
+﻿Build started 11/03/2016 10:56:12.
      1>Project "C:\Users\Santiago\Documents\GitHub\Projeto\Projeto.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
          C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\x86_amd64\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /D _DEBUG /D _CONSOLE /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"x64\Debug\\" /Fd"x64\Debug\vc140.pdb" /Gd /TP /errorReport:prompt Projeto.cpp
@@ -20,14 +20,14 @@
      1>c:\users\santiago\documents\github\projeto\projeto.cpp(271): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
      1>c:\users\santiago\documents\github\projeto\projeto.cpp(293): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
      1>c:\users\santiago\documents\github\projeto\projeto.cpp(299): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
-     1>c:\users\santiago\documents\github\projeto\sorter.h(218): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
-         c:\users\santiago\documents\github\projeto\sorter.h(214): note: see reference to function template instantiation 'void BucketSort<object,int>(object (*),type)' being compiled
+     1>c:\users\santiago\documents\github\projeto\sorts.h(192): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+         c:\users\santiago\documents\github\projeto\sorts.h(205): note: see reference to function template instantiation 'void TreeSort<object,int>(object (*),type)' being compiled
                  with
                  [
                      object=int [10],
                      type=int
                  ]
-         c:\users\santiago\documents\github\projeto\projeto.cpp(314): note: see reference to function template instantiation 'void BucketSort<int[10]>(object (*))' being compiled
+         c:\users\santiago\documents\github\projeto\projeto.cpp(314): note: see reference to function template instantiation 'void TreeSort<int[10]>(object (*))' being compiled
                  with
                  [
                      object=int [10]
@@ -39,4 +39,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:02.28
+Time Elapsed 00:00:02.02

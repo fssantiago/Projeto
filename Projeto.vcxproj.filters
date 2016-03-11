@@ -21,7 +21,7 @@
     <ClInclude Include="targetver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Sorter.h">
+    <ClInclude Include="Sorts.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
