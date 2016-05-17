@@ -29,5 +29,8 @@
     <ClCompile Include="Projeto.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Initializer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

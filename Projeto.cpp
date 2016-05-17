@@ -5,7 +5,6 @@
 #include <iostream>
 #include <algorithm>
 #include "Sorts.h"
-#include <list>
 
 using namespace std;
 
